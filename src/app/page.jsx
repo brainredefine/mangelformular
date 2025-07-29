@@ -87,16 +87,16 @@ export default function MangelmanagementChecklistForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Entrez le mot de passe"
+          placeholder="Geben Sie das Passwort ein"
           style={{ padding: '0.5rem', marginBottom: '1rem', width: '100%' }}
         />
-        <button onClick={() => password === 'Redefinepm' ? setIsAuthenticated(true) : alert('Mot de passe incorrect')}>
+        <button onClick={() => password === process.env.NEXT_PUBLIC_PASSWORD ? setIsAuthenticated(true) : alert('Falsches Passwort')}>
           Valider
         </button>
       </div>
     );
   }
-  
+
   if (submitted) return <div id="result" className="success">✔️ Formular gesendet!</div>;
 
   return (
