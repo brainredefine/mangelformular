@@ -81,17 +81,21 @@ export async function POST(request) {
     }
 
     // AI cost estimation
-    const aiTextPrompt = `- Analysiere die textliche Beschreibung von jedem Mangelpunkt
-    - Analysiere die Fotos und Beschreibe den Mangel auf den Fotos und beschreibe was Du siehst.
-    - Ordne die Fotos den einzelnen Mangelpunkten der textlichen Beschreibung zu und ergänze die textliche Beschreibung mit der Beschreibung der Fotos
-    - Jeder Mangelpunkt soll nun eine Leistungsposition sein
-    - Ordne die Leistungspositionen eine entsprechenden Kostengruppe (KG) gem. DIN 276 zu
-    - Gebe eine Kostenschätzung für jede Position ab
-    - Ergänze die Kostenschätzung mit einem üblichen Ansatz für die KG 700
-    - Ergänze die Kostenschätzung mit einem üblichen Ansatz für unvorhergesehenes
-    - Gebe die Gesamtsumme der Kostenschätzung aus.
+    const aiTextPrompt = `Sie sind ein Experte für Schadensmanagement in der Bauwirtschaft. Analysieren Sie die textlichen Beschreibungen von Mangelpunkten und die zugehörigen Fotos (verwenden Sie Tools wie view_image für URLs). Gehen Sie strukturiert vor und halten Sie sich strikt an die folgende Ausgabestruktur. Verwenden Sie DIN 276 für Kostengruppen (KG). Schätzen Sie Kosten realistisch (Stand 2025, Deutschland), inkl. Material, Arbeit, Nebenkosten. Ergänzen Sie mit KG 700 (z. B. 10-15% der Baukosten) und Unvorhergesehenes (z. B. 5-10% Puffer). Geben Sie detaillierte Berechnungen (z. B. Preis pro m² * Fläche).
+Eingabedaten: [Textbeschreibungen der Mangelpunkte einfügen, z. B. "Mangel 1: Riss in der Wand, 2m lang."]
+Ausgabestruktur (nummerieren Sie die Abschnitte genau so):
+1. Fotobeschreibung: Für jedes Foto: Objektive Beschreibung des sichtbaren Mangels (z. B. Farben, Ausmaße), unterstützt durch Textbeschreibung: "Auf Foto X sehe ich [z. B. horizontalen Riss ca. 1,5 m in weißer Wand mit Feuchtigkeitsflecken]. Passt zu [kurze Referenz zur Textbeschreibung]."
+2. Mangelbeschreibung: Aufzählungsliste aller Mängel: - Mangel 1: [Kurze Beschreibung]. - Mangel 2: [Kurze Beschreibung]. Usw.
+3. Liste der Leistungspositionen mit Kostengruppen und Kostenschätzung: Jeder Mangel als Leistungsposition (LP). Zuordnung zu KG (z. B. KG 300). Detaillierte Schätzung: - LP 1: [Leistungsbeschreibung, z. B. "Rissreparatur in Wand"]. KG: [z. B. 300]. Kostenschätzung: [z. B. "Material: 50 €/m² * 2 m² = 100 €; Arbeit: 80 €/h * 2 h = 160 €; Gesamt: 260 €"].
+4. Zusammenfassung der Kostenschätzung: Liste: LP | KG | Betrag (€). Ergänzen: KG 700 ([Berechnung, z. B. 12% der LP-Summe]) und Unvorhergesehenes ([Berechnung, z. B. 8% Gesamt]). Am Ende: Gesamtsumme: [Gesamt in €]. Beispiel:
+LP1 | 300 | 260
+...
+KG 700 | 700 | [Berechnung]
+Unvorhergesehenes | - | [Berechnung]
+Gesamtsumme: [Gesamt €].
+5. Zusammenfassung der Kosten nach KG (Tranchen à 100): Nur relevante KG auflisten, mit Gesamtbetrag pro Tranche (ohne KG 700/Unvorhergesehenes). Format: KG100: [Betrag €], KG200: [Betrag €], usw. Weglassen, wenn nicht vorhanden.
 
-Titel: ${titel}
+
 Beschreibung: ${beschreibung}
 
 `;
