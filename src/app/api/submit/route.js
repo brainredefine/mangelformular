@@ -112,11 +112,11 @@ Beschreibung: ${beschreibung}
           model: 'gpt-4o-mini',
           messages: [{ role: 'user', content }],
         });
-        aiOutput = aiResponse.choices[0].message.content || '0€. AI response empty.';
+        aiOutput = aiResponse.choices[0].message.content || 'AI response empty.';
         console.log('OpenAI full response:', aiOutput);
       } catch (aiError) {
         console.error('OpenAI error:', aiError);
-        aiOutput = '0€. AI estimation failed: ' + aiError.message;
+        aiOutput = 'AI estimation failed: ' + aiError.message;
       }
     } else {
       console.log('Skipping AI: No titel, beschreibung, or images provided.');
