@@ -81,13 +81,20 @@ export async function POST(request) {
     }
 
     // AI cost estimation
-    const aiTextPrompt = `You are a damage management expert. Estimate the cost of repairing the damage shown in the attached images and described in the text. Use the images to inform your estimation.
+    const aiTextPrompt = `- Analysiere die textliche Beschreibung von jedem Mangelpunkt
+    - Analysiere die Fotos und Beschreibe den Mangel auf den Fotos und beschreibe was Du siehst.
+    - Ordne die Fotos den einzelnen Mangelpunkten der textlichen Beschreibung zu und ergänze die textliche Beschreibung mit der Beschreibung der Fotos
+    - Jeder Mangelpunkt soll nun eine Leistungsposition sein
+    - Ordne die Leistungspositionen eine entsprechenden Kostengruppe (KG) gem. DIN 276 zu
+    - Gebe eine Kostenschätzung für jede Position ab
+    - Ergänze die Kostenschätzung mit einem üblichen Ansatz für die KG 700
+    - Ergänze die Kostenschätzung mit einem üblichen Ansatz für unvorhergesehenes
+    - Gebe die Gesamtsumme der Kostenschätzung aus.
 
 Titel: ${titel}
 Beschreibung: ${beschreibung}
 
-Respond EXACTLY in this format: "<cost>€. <Explanation in one or two sentences.>" 
-Use a number without commas (e.g., 50000, not 50,000) for the cost.`;
+`;
 
     let aiOutput = '0€. No estimation possible.';
     if (titel || beschreibung || imageBase64s.length > 0) {
@@ -115,9 +122,9 @@ Use a number without commas (e.g., 50000, not 50,000) for the cost.`;
       console.log('Skipping AI: No titel, beschreibung, or images provided.');
     }
 
-    const match = aiOutput.match(/^(\d+)€\.\s*(.*)/);
-    const estimated_price_ki = match ? parseInt(match[1], 10) : null;
-    const comment_ki = match ? match[2].trim() || 'No commentary' : 'No commentary';
+    // Store full AI response in comment_ki, leave estimated_price_ki null
+    const estimated_price_ki = null;
+    const comment_ki = aiOutput.trim();
 
     // Insert record in database
     const { data, error } = await supabase.from('mangelmanagement')
